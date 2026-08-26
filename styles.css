@@ -1,0 +1,180 @@
+:root {
+  --bg: #f5f7fb;
+  --panel: #fff;
+  --border: #dbe3ef;
+  --text: #162136;
+  --muted: #5f6f8a;
+  --accent: #2364e8;
+  --danger: #c93232;
+  --card-saved: #94a3b8;
+  --card-applied: #3b82f6;
+  --card-interview: #a855f7;
+  --card-offer: #22c55e;
+  --card-rejected: #ef4444;
+  --stat-bg: #f9fbff;
+  --btn-secondary-bg: #ecf2ff;
+  --btn-secondary-text: #2c4f92;
+  --input-bg: #fff;
+}
+
+body.dark-theme {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --border: #334155;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --accent: #3b82f6;
+  --danger: #ef4444;
+  --stat-bg: #0f172a;
+  --btn-secondary-bg: #334155;
+  --btn-secondary-text: #e2e8f0;
+  --input-bg: #0f172a;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  padding: 1.25rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+.header-content {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+header h1 { margin: 0; }
+header p { margin: 0.3rem 0 0; color: var(--muted); }
+
+main {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+h2 { margin-top: 0; }
+textarea, input, select, button {
+  font: inherit;
+}
+textarea, input, select {
+  width: 100%;
+  margin-top: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  background: var(--input-bg);
+  color: var(--text);
+}
+textarea { min-height: 130px; resize: vertical; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+.actions.compact { margin-top: 1.5rem; }
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+button.secondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+}
+button.danger {
+  background: #fae8e8;
+  color: var(--danger);
+}
+
+.hint { color: var(--muted); min-height: 1.4rem; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+.stat {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem;
+  background: var(--stat-bg);
+}
+.applications {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.7rem;
+}
+.dashboard-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+.dashboard-top .stats {
+  flex: 1;
+  min-width: 300px;
+}
+.dashboard-top .chart-container {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.application-card {
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.application-card.status-saved { border-left-color: var(--card-saved); }
+.application-card.status-applied { border-left-color: var(--card-applied); }
+.application-card.status-interview { border-left-color: var(--card-interview); }
+.application-card.status-offer { border-left-color: var(--card-offer); }
+.application-card.status-rejected { border-left-color: var(--card-rejected); }
+.application-card h3 { margin: 0; }
+.application-card p { margin: 0.3rem 0; color: var(--muted); }
+.card-actions {
+  min-width: 130px;
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+}
+.chips {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: var(--accent) !important;
+}
