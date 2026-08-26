@@ -1,68 +1,78 @@
-const STORAGE_KEY = 'hireflow.applications.v1';
-const DRAFT_KEY = 'hireflow.draft.v1';
-const THEME_KEY = 'hireflow.theme.v1';
+const STORAGE_KEY = "hireflow.applications.v2";
+const DRAFT_KEY = "hireflow.draft.v2";
+const THEME_KEY = "hireflow.theme.v2";
 
 const MAX_NOTES_LENGTH = 400;
 const MAX_SUMMARY_LENGTH = 120;
-const MIN_TITLE_LENGTH = 3;
-const MAX_TITLE_LENGTH = 80;
 
 const SKILL_POOL = [
-  'JavaScript',
-  'TypeScript',
-  'React',
-  'Node',
-  'Node.js',
-  'Python',
-  'Java',
-  'SQL',
-  'AWS',
-  'Azure',
-  'GCP',
-  'Docker',
-  'Kubernetes',
-  'CI/CD',
-  'Git',
-  'API',
-  'Agile',
-  'Scrum',
-  'Excel',
-  'Communication',
-  'Leadership',
-  'HTML',
-  'CSS',
-  'Vue',
-  'Angular',
-  'Django',
-  'Spring Boot',
-  'PostgreSQL',
-  'MongoDB',
-  'Redis',
-  'Tailwind'
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Node.js",
+  "Node",
+  "Python",
+  "Java",
+  "SQL",
+  "AWS",
+  "Azure",
+  "GCP",
+  "Docker",
+  "Kubernetes",
+  "CI/CD",
+  "Git",
+  "API",
+  "Agile",
+  "Scrum",
+  "Excel",
+  "Communication",
+  "Leadership",
+  "HTML",
+  "CSS",
+  "Vue",
+  "Angular",
+  "Django",
+  "Spring Boot",
+  "PostgreSQL",
+  "MongoDB",
+  "Redis",
+  "Tailwind"
 ];
 
-const form = document.getElementById('applicationForm');
-const list = document.getElementById('applicationsList');
-const template = document.getElementById('applicationCardTemplate');
-const stats = document.getElementById('stats');
-const searchInput = document.getElementById('searchInput');
-const statusFilter = document.getElementById('statusFilter');
-const sortSelect = document.getElementById('sortSelect');
-const analysisHint = document.getElementById('analysisHint');
-const themeToggle = document.getElementById('themeToggle');
 
-const fieldIds = [
-  'jobTitle',
-  'company',
-  'location',
-  'salary',
-  'applyUrl',
-  'deadline',
-  'status',
-  'dateApplied',
-  'skills',
-  'notes'
-];
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const form = document.getElementById("applicationForm");
+const list = document.getElementById("applicationsList");
+const template = document.getElementById("applicationCardTemplate");
+const stats = document.getElementById("stats");
+
+const searchInput = document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
+const sortSelect = document.getElementById("sortSelect");
+
+const analysisHint = document.getElementById("analysisHint");
+const themeToggle = document.getElementById("themeToggle");
+
+const jobDescription = document.getElementById("jobDescription");
+const notesInput = document.getElementById("notes");
+const notesCounter = document.getElementById("notesCounter");
+
+const applicationFormSection =
+  document.getElementById("applicationFormSection");
+
+const formHeading =
+  document.getElementById("formHeading");
+
+const saveApplicationBtn =
+  document.getElementById("saveApplicationBtn");
+
+
+/* =========================================================
+   STATE
+========================================================= */
 
 let applications = loadJson(STORAGE_KEY, []);
 let editingId = null;
@@ -71,30 +81,51 @@ let isDarkMode = loadJson(THEME_KEY, false);
 
 
 /* =========================================================
-   THEME
+   INITIAL THEME
 ========================================================= */
 
 if (isDarkMode) {
-  document.body.classList.add('dark-theme');
+  document.body.classList.add("dark-theme");
 }
 
-themeToggle.addEventListener('click', () => {
+
+/* =========================================================
+   THEME
+========================================================= */
+
+themeToggle.addEventListener("click", () => {
+
   isDarkMode = !isDarkMode;
 
-  document.body.classList.toggle('dark-theme', isDarkMode);
+  document.body.classList.toggle(
+    "dark-theme",
+    isDarkMode
+  );
 
   localStorage.setItem(
     THEME_KEY,
     JSON.stringify(isDarkMode)
   );
 
-  if (statusChart) {
-    statusChart.options.plugins.legend.labels.color =
-      isDarkMode ? '#f8fafc' : '#162136';
+  updateChartTheme();
 
-    statusChart.update();
-  }
 });
+
+
+function updateChartTheme() {
+
+  if (!statusChart) {
+    return;
+  }
+
+  statusChart.options.plugins.legend.labels.color =
+    isDarkMode
+      ? "#f8fafc"
+      : "#162136";
+
+  statusChart.update();
+
+}
 
 
 /* =========================================================
@@ -102,19 +133,32 @@ themeToggle.addEventListener('click', () => {
 ========================================================= */
 
 function loadJson(key, fallback) {
+
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
+
+    const raw =
+      localStorage.getItem(key);
+
+    return raw
+      ? JSON.parse(raw)
+      : fallback;
+
   } catch {
+
     return fallback;
+
   }
+
 }
 
+
 function saveApplications() {
+
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(applications)
   );
+
 }
 
 
@@ -123,29 +167,127 @@ function saveApplications() {
 ========================================================= */
 
 function formDataObject() {
+
   return Object.fromEntries(
     new FormData(form).entries()
   );
+
 }
+
 
 function setForm(data) {
-  fieldIds.forEach((id) => {
-    const el = document.getElementById(id);
 
-    if (el) {
-      el.value = data[id] || '';
+  const fields = [
+    "jobTitle",
+    "company",
+    "location",
+    "salary",
+    "applyUrl",
+    "deadline",
+    "status",
+    "dateApplied",
+    "skills",
+    "notes"
+  ];
+
+  fields.forEach((id) => {
+
+    const element =
+      document.getElementById(id);
+
+    if (element) {
+
+      element.value =
+        data[id] || "";
+
     }
+
   });
+
+  updateNotesCounter();
+
 }
 
+
 function resetForm() {
+
   editingId = null;
 
   form.reset();
 
-  document.getElementById('status').value = 'Saved';
-  document.getElementById('dateApplied').value = '';
+  document.getElementById("status").value =
+    "Saved";
+
+  document.getElementById("dateApplied").value =
+    "";
+
+  formHeading.textContent =
+    "Application Details";
+
+  saveApplicationBtn.textContent =
+    "Save Application";
+
+  updateNotesCounter();
+
 }
+
+
+function scrollToForm() {
+
+  applicationFormSection.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+  setTimeout(() => {
+
+    document.getElementById("jobTitle").focus();
+
+  }, 500);
+
+}
+
+
+/* =========================================================
+   ADD APPLICATION BUTTON
+========================================================= */
+
+document
+  .getElementById("addApplicationBtn")
+  .addEventListener("click", () => {
+
+    editingId = null;
+
+    resetForm();
+
+    analysisHint.textContent =
+      "Ready to add a new application.";
+
+    scrollToForm();
+
+  });
+
+
+/* =========================================================
+   NOTES COUNTER
+========================================================= */
+
+function updateNotesCounter() {
+
+  if (!notesInput || !notesCounter) {
+    return;
+  }
+
+  notesCounter.textContent =
+    notesInput.value.length;
+
+}
+
+
+notesInput.addEventListener(
+  "input",
+  updateNotesCounter
+);
 
 
 /* =========================================================
@@ -154,97 +296,110 @@ function resetForm() {
 
 function autoExtract(description) {
 
-  const clean = description
-    .replace(/\r/g, '')
-    .trim();
+  const clean =
+    description
+      .replace(/\r/g, "")
+      .trim();
 
-  /*
-   * Helper:
-   * Tries multiple regex patterns and returns
-   * the first successful result.
-   */
+
   const pick = (patterns) => {
 
     for (const regex of patterns) {
 
-      const match = clean.match(regex);
+      const match =
+        clean.match(regex);
 
       if (match && match[1]) {
+
         return match[1]
           .trim()
-          .replace(/\s+/g, ' ');
+          .replace(/\s+/g, " ");
+
       }
+
     }
 
-    return '';
+    return "";
+
   };
 
 
-  /* ---------------------------------------------------------
-     JOB TITLE
-  --------------------------------------------------------- */
+  /* JOB TITLE */
 
   const firstLine =
     clean
-      .split('\n')
+      .split("\n")
       .map(line => line.trim())
-      .find(line => line.length > 0) || '';
+      .find(line => line.length > 0) || "";
 
-  const titleFromLabel = pick([
-    /(?:job title|job|position|role|opening)\s*[:\-]\s*([^\n]+)/i
-  ]);
 
-  let jobTitle = titleFromLabel;
+  const titleFromLabel =
+    pick([
+      /(?:job title|job|position|role|opening)\s*[:\-]\s*([^\n]+)/i
+    ]);
+
+
+  let jobTitle =
+    titleFromLabel;
+
 
   if (!jobTitle) {
 
     if (
-      firstLine.length >= MIN_TITLE_LENGTH &&
-      firstLine.length <= MAX_TITLE_LENGTH &&
+      firstLine.length >= 3 &&
+      firstLine.length <= 80 &&
       !/^(company|location|salary|skills|required skills|deadline|apply by)\s*:/i.test(firstLine)
     ) {
-      jobTitle = firstLine;
+
+      jobTitle =
+        firstLine;
+
     }
+
   }
 
 
-  /* ---------------------------------------------------------
-     COMPANY
-  --------------------------------------------------------- */
+  /* COMPANY */
 
-  const company = pick([
-    /(?:company|organization|employer)\s*[:\-]\s*([^\n]+)/i
-  ]);
-
-
-  /* ---------------------------------------------------------
-     LOCATION
-  --------------------------------------------------------- */
-
-  const location = pick([
-    /(?:location|based in|work location|office location)\s*[:\-]\s*([^\n]+)/i
-  ]);
+  const company =
+    pick([
+      /(?:company|organization|employer)\s*[:\-]\s*([^\n]+)/i
+    ]);
 
 
-  /* ---------------------------------------------------------
-     SALARY
-  --------------------------------------------------------- */
+  /* LOCATION */
 
-  const salaryByLabel = pick([
-    /(?:salary|compensation|pay|ctc)\s*[:\-]\s*([^\n]+)/i
-  ]);
+  const location =
+    pick([
+      /(?:location|based in|work location|office location)\s*[:\-]\s*([^\n]+)/i
+    ]);
 
-  const salaryByINR = clean.match(
-    /₹\s*[\d,.]+\s*(?:-|–|to)\s*₹?\s*[\d,.]+\s*(?:LPA|lpa|lakhs?|lakhs per annum)?/i
-  )?.[0] || '';
 
-  const singleINR = clean.match(
-    /₹\s*[\d,.]+\s*(?:LPA|lpa|lakhs?|lakhs per annum)/i
-  )?.[0] || '';
+  /* SALARY */
 
-  const salaryByDollar = clean.match(
-    /\$\s*[\d,.]+\s*(?:-|–|to)\s*\$?\s*[\d,.]+(?:\s*(?:per year|year|yr|hr|hour))?/i
-  )?.[0] || '';
+  const salaryByLabel =
+    pick([
+      /(?:salary|compensation|pay|ctc)\s*[:\-]\s*([^\n]+)/i
+    ]);
+
+
+  const salaryByINR =
+    clean.match(
+      /₹\s*[\d,.]+\s*(?:-|–|to)\s*₹?\s*[\d,.]+\s*(?:LPA|lpa|lakhs?|lakhs per annum)?/i
+    )?.[0] || "";
+
+
+  const singleINR =
+    clean.match(
+      /₹\s*[\d,.]+\s*(?:LPA|lpa|lakhs?|lakhs per annum)/i
+    )?.[0] || "";
+
+
+  const salaryByDollar =
+    clean.match(
+      /\$\s*[\d,.]+\s*(?:-|–|to)\s*\$?\s*[\d,.]+(?:\s*(?:per year|year|yr|hr|hour))?/i
+    )?.[0] || "";
+
 
   const salary =
     salaryByLabel ||
@@ -253,80 +408,76 @@ function autoExtract(description) {
     salaryByDollar;
 
 
-  /* ---------------------------------------------------------
-     APPLICATION URL
-  --------------------------------------------------------- */
+  /* URL */
 
   const applyUrl =
-    clean.match(/https?:\/\/[^\s)]+/i)?.[0] || '';
+    clean.match(
+      /https?:\/\/[^\s)]+/i
+    )?.[0] || "";
 
 
-  /* ---------------------------------------------------------
-     DEADLINE
-  --------------------------------------------------------- */
+  /* DEADLINE */
 
-  const deadlinePhrase = pick([
-    /(?:deadline|apply by|application deadline|last date)\s*[:\-]\s*([^\n]+)/i
-  ]);
-
-  const deadline = parseToDate(deadlinePhrase);
+  const deadlinePhrase =
+    pick([
+      /(?:deadline|apply by|application deadline|last date)\s*[:\-]\s*([^\n]+)/i
+    ]);
 
 
-  /* ---------------------------------------------------------
-     SKILLS
-  --------------------------------------------------------- */
+  const deadline =
+    parseToDate(deadlinePhrase);
+
+
+  /* SKILLS */
 
   const detectedSkills = [];
 
+
   SKILL_POOL.forEach((word) => {
 
-    const escapedWord = word.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&'
-    );
+    const escapedWord =
+      word.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      );
 
-    const regex = new RegExp(
-      `(^|[^a-zA-Z0-9+#.])${escapedWord}(?=$|[^a-zA-Z0-9+#.])`,
-      'i'
-    );
+
+    const regex =
+      new RegExp(
+        `(^|[^a-zA-Z0-9+#.])${escapedWord}(?=$|[^a-zA-Z0-9+#.])`,
+        "i"
+      );
+
 
     if (regex.test(clean)) {
 
-      /*
-       * Avoid duplicate Node / Node.js type results
-       */
       if (
-        word === 'Node' &&
+        word === "Node" &&
         /\bNode\.js\b/i.test(clean)
       ) {
         return;
       }
 
       detectedSkills.push(word);
+
     }
+
   });
 
-  const skills = detectedSkills.join(', ');
-
-
-  /*
-   * IMPORTANT:
-   *
-   * We DO NOT put the JD into Notes.
-   *
-   * Notes stays empty unless the user already
-   * has something manually written there.
-   */
 
   return {
+
     jobTitle,
     company,
     location,
     salary,
     applyUrl,
     deadline,
-    skills
+    skills:
+      detectedSkills.join(", ")
+
   };
+
 }
 
 
@@ -337,22 +488,52 @@ function autoExtract(description) {
 function parseToDate(value) {
 
   if (!value) {
-    return '';
+    return "";
   }
 
-  const cleanedValue = value
-    .replace(/(\d+)(st|nd|rd|th)/gi, '$1')
-    .trim();
 
-  const parsed = new Date(cleanedValue);
+  const cleaned =
+    value
+      .replace(
+        /(\d+)(st|nd|rd|th)/gi,
+        "$1"
+      )
+      .trim();
+
+
+  let parsed =
+    new Date(cleaned);
+
 
   if (Number.isNaN(parsed.getTime())) {
-    return '';
+
+    const match =
+      cleaned.match(
+        /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/
+      );
+
+
+    if (match) {
+
+      parsed =
+        new Date(
+          `${match[3]}-${match[2]}-${match[1]}`
+        );
+
+    }
+
   }
+
+
+  if (Number.isNaN(parsed.getTime())) {
+    return "";
+  }
+
 
   return parsed
     .toISOString()
     .slice(0, 10);
+
 }
 
 
@@ -367,152 +548,182 @@ function filteredApplications() {
       .trim()
       .toLowerCase();
 
-  const status = statusFilter.value;
-  const sort = sortSelect.value;
 
-  let result = applications.filter((app) => {
+  const selectedStatus =
+    statusFilter.value;
 
-    const searchableText =
-      `${app.jobTitle || ''} 
-       ${app.company || ''} 
-       ${app.location || ''} 
-       ${app.skills || ''} 
-       ${app.notes || ''}`
-        .toLowerCase();
 
-    const queryOk =
-      !q || searchableText.includes(q);
+  const sort =
+    sortSelect.value;
 
-    const statusOk =
-      status === 'all' ||
-      app.status === status;
 
-    return queryOk && statusOk;
-  });
+  let result =
+    applications.filter((app) => {
+
+      const searchableText =
+        `
+        ${app.jobTitle || ""}
+        ${app.company || ""}
+        ${app.location || ""}
+        ${app.skills || ""}
+        ${app.notes || ""}
+        `
+          .toLowerCase();
+
+
+      const queryOk =
+        !q ||
+        searchableText.includes(q);
+
+
+      const statusOk =
+        selectedStatus === "all" ||
+        app.status === selectedStatus;
+
+
+      return queryOk && statusOk;
+
+    });
 
 
   result.sort((a, b) => {
 
-    if (sort === 'dateDesc') {
+    if (sort === "dateDesc") {
 
       return (
-        b.dateApplied || '0000-00-00'
+        b.dateApplied || "0000-00-00"
       ).localeCompare(
-        a.dateApplied || '0000-00-00'
+        a.dateApplied || "0000-00-00"
       );
 
-    } else if (sort === 'dateAsc') {
-
-      return (
-        a.dateApplied || '9999-99-99'
-      ).localeCompare(
-        b.dateApplied || '9999-99-99'
-      );
-
-    } else if (sort === 'title') {
-
-      return (
-        a.jobTitle || ''
-      ).localeCompare(
-        b.jobTitle || ''
-      );
-
-    } else if (sort === 'company') {
-
-      return (
-        a.company || ''
-      ).localeCompare(
-        b.company || ''
-      );
     }
 
+
+    if (sort === "dateAsc") {
+
+      return (
+        a.dateApplied || "9999-99-99"
+      ).localeCompare(
+        b.dateApplied || "9999-99-99"
+      );
+
+    }
+
+
+    if (sort === "title") {
+
+      return (
+        a.jobTitle || ""
+      ).localeCompare(
+        b.jobTitle || ""
+      );
+
+    }
+
+
+    if (sort === "company") {
+
+      return (
+        a.company || ""
+      ).localeCompare(
+        b.company || ""
+      );
+
+    }
+
+
     return 0;
+
   });
 
+
   return result;
+
 }
 
 
 /* =========================================================
-   DASHBOARD STATS
+   STATS
 ========================================================= */
 
 function renderStats() {
 
-  const counts = applications.reduce(
-    (acc, app) => {
+  const counts =
+    applications.reduce(
+      (acc, app) => {
 
-      acc.total += 1;
+        acc.total++;
 
-      acc[app.status] =
-        (acc[app.status] || 0) + 1;
+        acc[app.status] =
+          (acc[app.status] || 0) + 1;
 
-      return acc;
+        return acc;
 
-    },
-    {
-      total: 0,
-      Saved: 0,
-      Applied: 0,
-      Interview: 0,
-      Offer: 0,
-      Rejected: 0
-    }
-  );
+      },
+      {
+        total: 0,
+        Saved: 0,
+        Applied: 0,
+        Interview: 0,
+        Offer: 0,
+        Rejected: 0
+      }
+    );
 
 
   stats.innerHTML = [
-    'total',
-    'Saved',
-    'Applied',
-    'Interview',
-    'Offer',
-    'Rejected'
+
+    ["total", "Total"],
+    ["Saved", "Saved"],
+    ["Applied", "Applied"],
+    ["Interview", "Interview"],
+    ["Offer", "Offer"],
+    ["Rejected", "Rejected"]
+
   ]
-    .map((k) => {
+    .map(([key, label]) => {
 
       return `
         <div class="stat">
-          <strong>
-            ${k === 'total' ? 'Total' : k}
-          </strong>
-          <br>
-          ${counts[k] || 0}
+          <strong>${label}</strong>
+          <span>${counts[key] || 0}</span>
         </div>
       `;
 
     })
-    .join('');
+    .join("");
 
 
   updateChart(counts);
+
 }
 
 
 /* =========================================================
-   DOUGHNUT CHART
+   CHART
 ========================================================= */
 
 function updateChart(counts) {
 
   const canvas =
-    document.getElementById('statusChart');
+    document.getElementById(
+      "statusChart"
+    );
+
 
   if (!canvas) {
     return;
   }
 
-  const ctx =
-    canvas.getContext('2d');
 
   const data = {
 
     labels: [
-      'Saved',
-      'Applied',
-      'Interview',
-      'Offer',
-      'Rejected'
+      "Saved",
+      "Applied",
+      "Interview",
+      "Offer",
+      "Rejected"
     ],
 
     datasets: [
@@ -527,57 +738,73 @@ function updateChart(counts) {
         ],
 
         backgroundColor: [
-          '#94a3b8',
-          '#3b82f6',
-          '#a855f7',
-          '#22c55e',
-          '#ef4444'
+          "#94a3b8",
+          "#3b82f6",
+          "#a855f7",
+          "#22c55e",
+          "#ef4444"
         ],
 
         borderWidth: 1
+
       }
 
     ]
+
   };
 
 
   if (statusChart) {
 
-    statusChart.data = data;
+    statusChart.data =
+      data;
+
     statusChart.update();
 
-  } else {
+    return;
 
-    statusChart = new Chart(ctx, {
-
-      type: 'doughnut',
-
-      data: data,
-
-      options: {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        plugins: {
-
-          legend: {
-
-            position: 'right',
-
-            labels: {
-
-              color:
-                isDarkMode
-                  ? '#f8fafc'
-                  : '#162136'
-            }
-          }
-        }
-      }
-    });
   }
+
+
+  statusChart =
+    new Chart(
+      canvas.getContext("2d"),
+      {
+
+        type: "doughnut",
+
+        data,
+
+        options: {
+
+          responsive: true,
+
+          maintainAspectRatio: false,
+
+          plugins: {
+
+            legend: {
+
+              position: "right",
+
+              labels: {
+
+                color:
+                  isDarkMode
+                    ? "#f8fafc"
+                    : "#162136"
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    );
+
 }
 
 
@@ -589,7 +816,8 @@ function renderList() {
 
   renderStats();
 
-  list.innerHTML = '';
+  list.innerHTML = "";
+
 
   const items =
     filteredApplications();
@@ -598,15 +826,42 @@ function renderList() {
   if (!items.length) {
 
     list.innerHTML = `
-      <li class="application-card">
-        <p>
-          No applications found.
-          Save one to get started.
-        </p>
+      <li class="application-card empty-state">
+        <div>
+          <h3>No applications found</h3>
+          <p>
+            Add your first application to start
+            tracking your job search.
+          </p>
+
+          <button
+            id="emptyAddBtn"
+            class="primary-button"
+            type="button"
+          >
+            + Add Application
+          </button>
+        </div>
       </li>
     `;
 
+
+    document
+      .getElementById("emptyAddBtn")
+      ?.addEventListener(
+        "click",
+        () => {
+
+          resetForm();
+
+          scrollToForm();
+
+        }
+      );
+
+
     return;
+
   }
 
 
@@ -618,18 +873,21 @@ function renderList() {
         .cloneNode(true);
 
 
+    const statusClass =
+      (app.status || "Saved")
+        .toLowerCase();
+
+
     node.classList.add(
-      `status-${(
-        app.status || 'saved'
-      ).toLowerCase()}`
+      `status-${statusClass}`
     );
 
 
     node.querySelector(
       '[data-role="title"]'
     ).textContent =
-      `${app.jobTitle || 'Untitled role'} — ${
-        app.company || 'Unknown company'
+      `${app.jobTitle || "Untitled role"} — ${
+        app.company || "Unknown company"
       }`;
 
 
@@ -641,19 +899,25 @@ function renderList() {
 
       app.salary,
 
+      app.deadline &&
+        `Deadline: ${app.deadline}`,
+
       app.dateApplied &&
         `Applied: ${app.dateApplied}`
 
     ]
       .filter(Boolean)
-      .join(' • ');
+      .join(" • ");
 
 
     node.querySelector(
       '[data-role="summary"]'
     ).textContent =
       app.notes
-        ?.slice(0, MAX_SUMMARY_LENGTH) || '';
+        ?.slice(
+          0,
+          MAX_SUMMARY_LENGTH
+        ) || "No notes added.";
 
 
     node.querySelector(
@@ -661,7 +925,7 @@ function renderList() {
     ).textContent =
       app.skills
         ? `Skills: ${app.skills}`
-        : '';
+        : "No skills added";
 
 
     /* STATUS */
@@ -671,20 +935,25 @@ function renderList() {
         '[data-role="statusSelect"]'
       );
 
+
     statusSelect.value =
-      app.status || 'Saved';
+      app.status || "Saved";
 
 
     statusSelect.addEventListener(
-      'change',
+      "change",
       () => {
 
         app.status =
           statusSelect.value;
 
+        app.updatedAt =
+          new Date().toISOString();
+
         saveApplications();
 
         renderList();
+
       }
     );
 
@@ -694,19 +963,57 @@ function renderList() {
     node.querySelector(
       '[data-role="edit"]'
     ).addEventListener(
-      'click',
+      "click",
       () => {
 
-        editingId = app.id;
+        editingId =
+          app.id;
 
         setForm(app);
 
+        formHeading.textContent =
+          "Edit Application";
+
+        saveApplicationBtn.textContent =
+          "Update Application";
+
+        analysisHint.textContent =
+          "Editing this application.";
+
         saveDraft();
 
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        scrollToForm();
+
+      }
+    );
+
+
+    /* OPEN */
+
+    node.querySelector(
+      '[data-role="open"]'
+    ).addEventListener(
+      "click",
+      () => {
+
+        if (!app.applyUrl) {
+
+          analysisHint.textContent =
+            "This application does not have an application URL.";
+
+          scrollToForm();
+
+          return;
+
+        }
+
+
+        window.open(
+          app.applyUrl,
+          "_blank",
+          "noopener,noreferrer"
+        );
+
       }
     );
 
@@ -716,29 +1023,44 @@ function renderList() {
     node.querySelector(
       '[data-role="delete"]'
     ).addEventListener(
-      'click',
+      "click",
       () => {
+
+        const confirmed =
+          confirm(
+            `Delete ${app.jobTitle || "this application"}?`
+          );
+
+
+        if (!confirmed) {
+          return;
+        }
+
 
         applications =
           applications.filter(
-            (item) =>
+            item =>
               item.id !== app.id
           );
+
 
         saveApplications();
 
         renderList();
+
       }
     );
 
 
     list.appendChild(node);
+
   });
+
 }
 
 
 /* =========================================================
-   DRAFT SYSTEM
+   DRAFT
 ========================================================= */
 
 function saveDraft() {
@@ -746,13 +1068,16 @@ function saveDraft() {
   const data =
     formDataObject();
 
+
   data.editingId =
     editingId;
+
 
   localStorage.setItem(
     DRAFT_KEY,
     JSON.stringify(data)
   );
+
 }
 
 
@@ -764,143 +1089,157 @@ function loadDraft() {
       null
     );
 
-  if (draft) {
 
-    if (draft.editingId) {
-      editingId =
-        draft.editingId;
-    }
-
-    setForm(draft);
-
-    return true;
+  if (!draft) {
+    return false;
   }
 
-  return false;
+
+  if (draft.editingId) {
+
+    editingId =
+      draft.editingId;
+
+  }
+
+
+  setForm(draft);
+
+
+  if (editingId) {
+
+    formHeading.textContent =
+      "Edit Application";
+
+    saveApplicationBtn.textContent =
+      "Update Application";
+
+  }
+
+
+  return true;
+
 }
 
 
 /* =========================================================
-   ANALYZE BUTTON
+   ANALYZE
 ========================================================= */
 
 document
-  .getElementById('analyzeBtn')
+  .getElementById("analyzeBtn")
   .addEventListener(
-    'click',
+    "click",
     () => {
 
       const description =
-        document
-          .getElementById(
-            'jobDescription'
-          )
-          .value
-          .trim();
+        jobDescription.value.trim();
 
 
       if (!description) {
 
         analysisHint.textContent =
-          'Paste a job description first.';
+          "Paste a job description first.";
+
+        jobDescription.focus();
 
         return;
+
       }
 
 
-      const prefilled =
-        autoExtract(description);
+      const extracted =
+        autoExtract(
+          description
+        );
 
 
-      /*
-       * Get current form values.
-       * This means manually entered Notes
-       * will NOT be deleted.
-       */
-
-      const currentData =
+      const current =
         formDataObject();
 
 
-      const mergedData = {
-        ...currentData
+      const merged = {
+        ...current
       };
 
 
-      /*
-       * Only update fields where
-       * extraction actually found something.
-       */
+      Object.keys(extracted)
+        .forEach((key) => {
 
-      Object.keys(prefilled).forEach(
-        (key) => {
+          if (extracted[key]) {
 
-          if (prefilled[key]) {
+            merged[key] =
+              extracted[key];
 
-            mergedData[key] =
-              prefilled[key];
           }
-        }
-      );
+
+        });
 
 
-      setForm(mergedData);
+      setForm(merged);
 
 
       analysisHint.textContent =
-        '✓ Job details extracted. Review the fields and click Save Application.';
+        "✓ Job details extracted. Review the fields and save your application.";
 
 
       saveDraft();
+
+
+      scrollToForm();
+
     }
   );
 
 
 /* =========================================================
-   CLEAR DRAFT
+   CLEAR
 ========================================================= */
 
 document
-  .getElementById('clearDraftBtn')
+  .getElementById("clearDraftBtn")
   .addEventListener(
-    'click',
+    "click",
     () => {
 
       localStorage.removeItem(
         DRAFT_KEY
       );
 
-      document
-        .getElementById(
-          'jobDescription'
-        )
-        .value = '';
-
-
-      analysisHint.textContent =
-        'Draft cleared.';
+      jobDescription.value =
+        "";
 
       resetForm();
+
+      analysisHint.textContent =
+        "Draft cleared.";
+
     }
   );
 
 
 /* =========================================================
-   AUTO SAVE DRAFT
+   AUTO SAVE
 ========================================================= */
 
 form.addEventListener(
-  'input',
-  saveDraft
+  "input",
+  () => {
+
+    updateNotesCounter();
+
+    saveDraft();
+
+  }
 );
 
 
 /* =========================================================
-   SAVE APPLICATION
+   SAVE / UPDATE
 ========================================================= */
 
 form.addEventListener(
-  'submit',
+  "submit",
   (event) => {
 
     event.preventDefault();
@@ -908,6 +1247,36 @@ form.addEventListener(
 
     const data =
       formDataObject();
+
+
+    if (!data.jobTitle.trim()) {
+
+      alert(
+        "Please enter a job title."
+      );
+
+      return;
+
+    }
+
+
+    if (!data.company.trim()) {
+
+      alert(
+        "Please enter a company name."
+      );
+
+      return;
+
+    }
+
+
+    data.notes =
+      data.notes
+        .slice(
+          0,
+          MAX_NOTES_LENGTH
+        );
 
 
     const payload = {
@@ -920,6 +1289,7 @@ form.addEventListener(
 
       updatedAt:
         new Date().toISOString()
+
     };
 
 
@@ -927,48 +1297,53 @@ form.addEventListener(
 
       applications =
         applications.map(
-          (item) =>
+          item =>
             item.id === editingId
               ? payload
               : item
         );
+
+
+      analysisHint.textContent =
+        "✓ Application updated successfully.";
 
     } else {
 
       applications.unshift(
         payload
       );
+
+
+      analysisHint.textContent =
+        "✓ Application saved successfully.";
+
     }
 
 
     saveApplications();
+
 
     localStorage.removeItem(
       DRAFT_KEY
     );
 
 
-    analysisHint.textContent =
-      editingId
-        ? 'Application updated.'
-        : 'Application saved.';
-
-
     resetForm();
 
     renderList();
+
   }
 );
 
 
 /* =========================================================
-   RESET FORM
+   RESET
 ========================================================= */
 
 document
-  .getElementById('resetFormBtn')
+  .getElementById("resetFormBtn")
   .addEventListener(
-    'click',
+    "click",
     () => {
 
       localStorage.removeItem(
@@ -976,6 +1351,10 @@ document
       );
 
       resetForm();
+
+      analysisHint.textContent =
+        "Form reset.";
+
     }
   );
 
@@ -985,17 +1364,19 @@ document
 ========================================================= */
 
 searchInput.addEventListener(
-  'input',
+  "input",
   renderList
 );
+
 
 statusFilter.addEventListener(
-  'change',
+  "change",
   renderList
 );
 
+
 sortSelect.addEventListener(
-  'change',
+  "change",
   renderList
 );
 
@@ -1005,9 +1386,9 @@ sortSelect.addEventListener(
 ========================================================= */
 
 document
-  .getElementById('exportBtn')
+  .getElementById("exportBtn")
   .addEventListener(
-    'click',
+    "click",
     () => {
 
       const blob =
@@ -1021,30 +1402,16 @@ document
           ],
           {
             type:
-              'application/json'
+              "application/json"
           }
         );
 
 
-      const url =
-        URL.createObjectURL(
-          blob
-        );
+      downloadBlob(
+        blob,
+        "hireflow-applications.json"
+      );
 
-
-      const a =
-        document.createElement(
-          'a'
-        );
-
-      a.href = url;
-
-      a.download =
-        'hireflow-applications.json';
-
-      a.click();
-
-      URL.revokeObjectURL(url);
     }
   );
 
@@ -1054,116 +1421,140 @@ document
 ========================================================= */
 
 document
-  .getElementById('exportCsvBtn')
+  .getElementById("exportCsvBtn")
   .addEventListener(
-    'click',
+    "click",
     () => {
 
       if (!applications.length) {
+
+        alert(
+          "There are no applications to export."
+        );
+
         return;
+
       }
 
 
       const headers = [
 
-        'jobTitle',
-        'company',
-        'location',
-        'salary',
-        'applyUrl',
-        'deadline',
-        'status',
-        'dateApplied',
-        'skills',
-        'notes',
-        'updatedAt'
+        "jobTitle",
+        "company",
+        "location",
+        "salary",
+        "applyUrl",
+        "deadline",
+        "status",
+        "dateApplied",
+        "skills",
+        "notes",
+        "updatedAt"
 
       ];
 
 
       const rows =
         applications.map(
-          (app) =>
-
+          app =>
             headers
-              .map((h) => {
+              .map(header => {
 
-                const val =
-                  app[h] || '';
+                const value =
+                  app[header] || "";
 
-                return `"${String(val)
+                return `"${String(value)
                   .replace(/"/g, '""')}"`;
+
               })
-              .join(',')
+              .join(",")
         );
 
 
-      const csvContent =
+      const csv =
         [
-          headers.join(','),
+          headers.join(","),
           ...rows
-        ].join('\n');
+        ].join("\n");
 
 
       const blob =
         new Blob(
-          [csvContent],
+          [csv],
           {
-            type: 'text/csv'
+            type:
+              "text/csv;charset=utf-8"
           }
         );
 
 
-      const url =
-        URL.createObjectURL(
-          blob
-        );
+      downloadBlob(
+        blob,
+        "hireflow-applications.csv"
+      );
 
-
-      const a =
-        document.createElement(
-          'a'
-        );
-
-      a.href = url;
-
-      a.download =
-        'hireflow-applications.csv';
-
-      a.click();
-
-      URL.revokeObjectURL(url);
     }
   );
+
+
+function downloadBlob(blob, filename) {
+
+  const url =
+    URL.createObjectURL(blob);
+
+
+  const a =
+    document.createElement("a");
+
+
+  a.href =
+    url;
+
+  a.download =
+    filename;
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+
+  setTimeout(
+    () =>
+      URL.revokeObjectURL(url),
+    100
+  );
+
+}
 
 
 /* =========================================================
-   IMPORT JSON
+   IMPORT
 ========================================================= */
 
 document
-  .getElementById('importBtn')
+  .getElementById("importBtn")
   .addEventListener(
-    'click',
+    "click",
     () => {
 
       document
-        .getElementById(
-          'importFile'
-        )
+        .getElementById("importFile")
         .click();
+
     }
   );
 
 
 document
-  .getElementById('importFile')
+  .getElementById("importFile")
   .addEventListener(
-    'change',
+    "change",
     async (event) => {
 
-      const [file] =
-        event.target.files || [];
+      const file =
+        event.target.files?.[0];
 
 
       if (!file) {
@@ -1180,25 +1571,21 @@ document
 
 
         if (!Array.isArray(imported)) {
+
           throw new Error(
-            'Invalid format'
+            "Invalid format"
           );
+
         }
 
 
         const valid =
           imported.filter(
-            (item) =>
+            item =>
               item &&
-              typeof item ===
-                'object' &&
+              typeof item === "object" &&
               item.id
           );
-
-
-        const skipped =
-          imported.length -
-          valid.length;
 
 
         applications =
@@ -1211,17 +1598,18 @@ document
 
 
         analysisHint.textContent =
-          skipped > 0
-            ? `Imported ${valid.length} applications. Skipped ${skipped} invalid entries.`
-            : `Imported ${valid.length} applications.`;
+          `✓ Imported ${valid.length} applications successfully.`;
 
       } catch {
 
         analysisHint.textContent =
-          'Could not import file. Use exported JSON format.';
+          "Could not import file. Please use a HireFlow exported JSON file.";
+
       }
 
-      event.target.value = '';
+
+      event.target.value = "";
+
     }
   );
 
@@ -1231,171 +1619,129 @@ document
 ========================================================= */
 
 document
-  .getElementById('loadSampleBtn')
+  .getElementById("loadSampleBtn")
   .addEventListener(
-    'click',
+    "click",
     () => {
+
+      const now =
+        new Date().toISOString();
+
 
       const sampleData = [
 
         {
           id: crypto.randomUUID(),
-          jobTitle:
-            'Senior Frontend Engineer',
-          company:
-            'TechCorp Inc.',
-          location:
-            'Remote (US)',
-          salary:
-            '$140,000 - $160,000',
-          applyUrl:
-            'https://techcorp.com/careers/frontend',
-          deadline:
-            '2026-12-31',
-          status:
-            'Interview',
-          dateApplied:
-            '2026-10-15',
-          skills:
-            'React, TypeScript, CSS, Testing',
-          notes:
-            'Had a great first round with the hiring manager. Next step is a technical pair programming session.',
-          updatedAt:
-            new Date().toISOString()
+          jobTitle: "Software Engineer",
+          company: "Google",
+          location: "Bangalore",
+          salary: "₹18–25 LPA",
+          applyUrl: "https://careers.google.com/",
+          deadline: "2026-12-31",
+          status: "Interview",
+          dateApplied: "2026-08-20",
+          skills: "Java, SQL, Git, AWS",
+          notes: "Technical interview scheduled. Prepare DSA and system design.",
+          updatedAt: now
         },
 
         {
           id: crypto.randomUUID(),
-          jobTitle:
-            'Full Stack Developer',
-          company:
-            'StartupX',
-          location:
-            'New York, NY',
-          salary:
-            '$120,000',
-          applyUrl:
-            'https://startupx.io/jobs/123',
-          deadline:
-            '2026-11-15',
-          status:
-            'Applied',
-          dateApplied:
-            '2026-10-20',
-          skills:
-            'Node.js, React, PostgreSQL',
-          notes:
-            'Applied through their custom portal. Need to follow up in a week if I do not hear back.',
-          updatedAt:
-            new Date().toISOString()
+          jobTitle: "Frontend Developer",
+          company: "Microsoft",
+          location: "Hyderabad",
+          salary: "₹15–22 LPA",
+          applyUrl: "https://careers.microsoft.com/",
+          deadline: "2026-09-15",
+          status: "Applied",
+          dateApplied: "2026-08-18",
+          skills: "React, TypeScript, JavaScript, CSS",
+          notes: "Applied through campus hiring portal.",
+          updatedAt: now
         },
 
         {
           id: crypto.randomUUID(),
-          jobTitle:
-            'Software Engineer II',
-          company:
-            'Global Systems',
-          location:
-            'Austin, TX',
-          salary:
-            '$130,000',
-          applyUrl:
-            '',
-          deadline:
-            '',
-          status:
-            'Rejected',
-          dateApplied:
-            '2026-09-01',
-          skills:
-            'Java, Spring Boot, AWS',
-          notes:
-            'Received a standard rejection email. Role might have been filled internally.',
-          updatedAt:
-            new Date().toISOString()
+          jobTitle: "Backend Developer",
+          company: "Amazon",
+          location: "Bangalore",
+          salary: "₹16–24 LPA",
+          applyUrl: "https://www.amazon.jobs/",
+          deadline: "2026-09-20",
+          status: "Saved",
+          dateApplied: "",
+          skills: "Java, Spring Boot, AWS, SQL",
+          notes: "Need to customize resume before applying.",
+          updatedAt: now
         },
 
         {
           id: crypto.randomUUID(),
-          jobTitle:
-            'Lead Web Developer',
-          company:
-            'Creative Agency',
-          location:
-            'London, UK (Hybrid)',
-          salary:
-            '£80,000',
-          applyUrl:
-            'https://creative.agency/careers',
-          deadline:
-            '2026-11-30',
-          status:
-            'Offer',
-          dateApplied:
-            '2026-09-15',
-          skills:
-            'JavaScript, Vue.js, Tailwind',
-          notes:
-            'They offered! Need to review the benefits package before accepting.',
-          updatedAt:
-            new Date().toISOString()
+          jobTitle: "Data Analyst",
+          company: "Deloitte",
+          location: "Bangalore",
+          salary: "₹8–12 LPA",
+          applyUrl: "https://www.deloitte.com/",
+          deadline: "2026-09-10",
+          status: "Rejected",
+          dateApplied: "2026-08-10",
+          skills: "Python, SQL, Excel",
+          notes: "Rejected after resume screening.",
+          updatedAt: now
         },
 
         {
           id: crypto.randomUUID(),
-          jobTitle:
-            'Backend Engineer',
-          company:
-            'DataStream',
-          location:
-            'San Francisco, CA',
-          salary:
-            '$150,000+',
-          applyUrl:
-            'https://datastream.io/apply',
-          deadline:
-            '2026-12-01',
-          status:
-            'Saved',
-          dateApplied:
-            '',
-          skills:
-            'Python, Django, Redis, Docker',
-          notes:
-            'Interesting company, need to polish my resume to highlight my Docker experience before applying.',
-          updatedAt:
-            new Date().toISOString()
+          jobTitle: "Full Stack Developer",
+          company: "Razorpay",
+          location: "Bangalore",
+          salary: "₹12–18 LPA",
+          applyUrl: "https://razorpay.com/jobs/",
+          deadline: "2026-10-01",
+          status: "Offer",
+          dateApplied: "2026-08-05",
+          skills: "React, Node.js, MongoDB, Docker",
+          notes: "Offer received. Reviewing compensation and role details.",
+          updatedAt: now
         }
 
       ];
 
 
-      applications = [
-        ...sampleData,
-        ...applications
-      ];
+      applications =
+        [
+          ...sampleData,
+          ...applications
+        ];
 
 
       saveApplications();
 
       renderList();
 
+
       analysisHint.textContent =
-        'Sample data loaded successfully!';
+        "✓ Demo applications loaded successfully.";
+
     }
   );
 
 
 /* =========================================================
-   INITIALIZE APP
+   INITIALIZE
 ========================================================= */
 
 const hasDraft =
   loadDraft();
 
+
 if (!hasDraft) {
+
   resetForm();
+
 }
+
+
+updateNotesCounter();
 
 renderList();

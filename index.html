@@ -6,457 +6,314 @@
 
   <title>HireFlow — Job Application Tracker</title>
 
+  <meta
+    name="description"
+    content="HireFlow is a smart job application tracker with job description analysis, analytics and application management."
+  />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
 
   <link rel="stylesheet" href="./styles.css" />
-
-  
 </head>
 
 <body>
 
-  <!-- ================= HEADER ================= -->
+<header class="topbar">
 
-  <header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">H</div>
 
-    <div class="brand">
-      <div class="brand-mark">H</div>
+    <div class="brand-copy">
+      <h1>HireFlow</h1>
+      <p>Smart job search management</p>
+    </div>
+  </div>
 
-      <div>
-        <h1>HireFlow</h1>
-        <p>Smart job search management</p>
-      </div>
+  <div class="topbar-actions">
+
+    <button
+      id="themeToggle"
+      class="icon-button"
+      type="button"
+      aria-label="Toggle dark mode"
+      title="Toggle dark mode"
+    >
+      ◐
+    </button>
+
+    <button
+      id="addApplicationBtn"
+      class="primary-button add-button"
+      type="button"
+    >
+      <span>+</span>
+      Add Application
+    </button>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="hero-content">
+
+      <span class="eyebrow">
+        JOB SEARCH COMMAND CENTER
+      </span>
+
+      <h2>
+        Your job search,
+        <span>organized.</span>
+      </h2>
+
+      <p>
+        Track applications, analyze job descriptions,
+        manage your pipeline and keep every opportunity
+        moving forward.
+      </p>
+
     </div>
 
-    <div class="topbar-actions">
+    <div class="hero-badge">
+      <span class="status-dot"></span>
+      Local data storage
+    </div>
 
-      <button
-        id="themeToggle"
-        class="icon-button"
-        type="button"
-        aria-label="Toggle dark mode"
-      >
-        ◐
-      </button>
+  </section>
 
-      <button
-        class="primary-button"
-        type="button"
-        onclick="document.getElementById('jobDescription').focus()"
-      >
-        + Add Application
-      </button>
+
+  <!-- STATS -->
+
+  <section class="stats-section">
+
+    <div class="section-heading">
+
+      <div>
+        <span class="eyebrow">OVERVIEW</span>
+        <h3>Application pipeline</h3>
+      </div>
 
     </div>
 
-  </header>
+    <div id="stats" class="stats"></div>
+
+  </section>
 
 
-  <!-- ================= MAIN ================= -->
+  <!-- ANALYZER + ANALYTICS -->
 
-  <main class="container">
+  <section class="workspace">
 
-    <!-- HERO -->
-
-    <section class="hero">
-
-      <div>
-
-        <span class="eyebrow">JOB SEARCH COMMAND CENTER</span>
-
-        <h2>
-          Your job search,
-          <span>organized.</span>
-        </h2>
-
-        <p>
-          Track applications, analyze job descriptions and keep your
-          opportunities moving forward.
-        </p>
-
-      </div>
-
-      <div class="hero-badge">
-        <span class="status-dot"></span>
-        Local data storage
-      </div>
-
-    </section>
-
-
-    <!-- ================= STATS ================= -->
-
-    <section class="stats-section">
-
-      <div class="section-heading">
-
-        <div>
-          <span class="eyebrow">OVERVIEW</span>
-          <h3>Application pipeline</h3>
-        </div>
-
-      </div>
-
-      <div id="stats" class="stats"></div>
-
-    </section>
-
-
-    <!-- ================= JD ANALYZER ================= -->
-
-    <section class="workspace">
-
-      <div class="panel analyzer-panel">
-
-        <div class="panel-heading">
-
-          <div class="panel-icon">✦</div>
-
-          <div>
-            <h3>Job Description Analyzer</h3>
-
-            <p>
-              Paste a job description and let HireFlow
-              extract important details automatically.
-            </p>
-          </div>
-
-        </div>
-
-
-        <label for="jobDescription">
-          Job Description
-        </label>
-
-        <textarea
-          id="jobDescription"
-          placeholder="Paste the job description here...
-
-Example:
-Software Engineer
-Company: Google
-Location: Bangalore
-Required Skills: Java, SQL, Git, AWS
-Salary: ₹12–18 LPA"
-        ></textarea>
-
-
-        <div class="analyzer-actions">
-
-          <button
-            id="analyzeBtn"
-            class="primary-button"
-            type="button"
-          >
-            ✦ Analyze & Prefill
-          </button>
-
-          <button
-            id="clearDraftBtn"
-            class="secondary-button"
-            type="button"
-          >
-            Clear
-          </button>
-
-        </div>
-
-        <p id="analysisHint" class="hint"></p>
-
-      </div>
-
-
-      <!-- ================= CHART ================= -->
-
-      <div class="panel analytics-panel">
-
-        <div class="panel-heading">
-
-          <div class="panel-icon">◔</div>
-
-          <div>
-            <h3>Application Analytics</h3>
-            <p>Track your application pipeline.</p>
-          </div>
-
-        </div>
-
-        <div class="chart-container">
-          <canvas id="statusChart"></canvas>
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ================= APPLICATION FORM ================= -->
-
-    <section class="panel form-panel">
+    <div class="panel analyzer-panel">
 
       <div class="panel-heading">
 
-        <div class="panel-icon">＋</div>
+        <div class="panel-icon">✦</div>
 
         <div>
-          <h3>Application Details</h3>
+          <h3>Job Description Analyzer</h3>
 
           <p>
-            Review the extracted information before saving.
+            Paste a job description and let HireFlow
+            extract important details automatically.
           </p>
         </div>
 
       </div>
 
+      <label for="jobDescription">
+        Job Description
+      </label>
 
-      <form id="applicationForm">
+      <textarea
+        id="jobDescription"
+        maxlength="10000"
+        placeholder="Paste the job description here...
 
-        <div class="form-grid">
+Example:
 
-          <label>
-            Job Title
+Software Engineer
 
-            <input
-              id="jobTitle"
-              name="jobTitle"
-              placeholder="Software Engineer"
-              required
-            />
-          </label>
+Company: Google
+Location: Bangalore
+Required Skills: Java, SQL, Git, AWS
+Salary: ₹12–18 LPA
+Apply by: December 31, 2026"
+      ></textarea>
 
+      <div class="analyzer-actions">
 
-          <label>
-            Company
+        <button
+          id="analyzeBtn"
+          class="primary-button"
+          type="button"
+        >
+          ✦ Analyze & Prefill
+        </button>
 
-            <input
-              id="company"
-              name="company"
-              placeholder="Company name"
-              required
-            />
-          </label>
+        <button
+          id="clearDraftBtn"
+          class="secondary-button"
+          type="button"
+        >
+          Clear
+        </button>
 
+      </div>
 
-          <label>
-            Location
+      <p
+        id="analysisHint"
+        class="hint"
+        aria-live="polite"
+      ></p>
 
-            <input
-              id="location"
-              name="location"
-              placeholder="Bangalore / Remote"
-            />
-          </label>
-
-
-          <label>
-            Salary
-
-            <input
-              id="salary"
-              name="salary"
-              placeholder="₹10–15 LPA"
-            />
-          </label>
+    </div>
 
 
-          <label>
-            Application URL
+    <div class="panel analytics-panel">
 
-            <input
-              id="applyUrl"
-              name="applyUrl"
-              type="url"
-              placeholder="https://..."
-            />
-          </label>
+      <div class="panel-heading">
 
+        <div class="panel-icon">◔</div>
 
-          <label>
-            Deadline
-
-            <input
-              id="deadline"
-              name="deadline"
-              type="date"
-            />
-          </label>
-
-
-          <label>
-            Status
-
-            <select id="status" name="status">
-
-              <option>Saved</option>
-              <option>Applied</option>
-              <option>Interview</option>
-              <option>Offer</option>
-              <option>Rejected</option>
-
-            </select>
-
-          </label>
-
-
-          <label>
-            Date Applied
-
-            <input
-              id="dateApplied"
-              name="dateApplied"
-              type="date"
-            />
-          </label>
-
-        </div>
-
-
-        <label class="full-width">
-
-          Skills / Keywords
-
-          <input
-            id="skills"
-            name="skills"
-            placeholder="Java, SQL, React, AWS..."
-          />
-
-        </label>
-
-
-        <label class="full-width">
-
-          Notes
-
-          <textarea
-            id="notes"
-            name="notes"
-            rows="4"
-            placeholder="Add interview notes, recruiter details or follow-up reminders..."
-          ></textarea>
-
-        </label>
-
-
-        <div class="form-actions">
-
-          <button
-            type="submit"
-            class="primary-button"
-          >
-            Save Application
-          </button>
-
-          <button
-            id="resetFormBtn"
-            class="secondary-button"
-            type="button"
-          >
-            Reset
-          </button>
-
-        </div>
-
-      </form>
-
-    </section>
-
-
-    <!-- ================= APPLICATIONS ================= -->
-
-    <section class="panel applications-panel">
-
-      <div class="applications-header">
-
-        <div class="panel-heading">
-
-          <div class="panel-icon">▤</div>
-
-          <div>
-            <h3>Your Applications</h3>
-
-            <p>
-              Search and manage your opportunities.
-            </p>
-          </div>
-
-        </div>
-
-
-        <div class="data-actions">
-
-          <button
-            id="loadSampleBtn"
-            class="secondary-button"
-            type="button"
-          >
-            Load Demo
-          </button>
-
-          <button
-            id="exportBtn"
-            class="secondary-button"
-            type="button"
-          >
-            Export JSON
-          </button>
-
-          <button
-            id="exportCsvBtn"
-            class="secondary-button"
-            type="button"
-          >
-            Export CSV
-          </button>
-
-          <button
-            id="importBtn"
-            class="secondary-button"
-            type="button"
-          >
-            Import
-          </button>
-
-          <input
-            id="importFile"
-            type="file"
-            accept="application/json"
-            hidden
-          />
-
+        <div>
+          <h3>Application Analytics</h3>
+          <p>Track your application pipeline.</p>
         </div>
 
       </div>
 
+      <div class="chart-container">
+        <canvas id="statusChart"></canvas>
+      </div>
 
-      <!-- FILTERS -->
+    </div>
 
-      <div class="filters">
+  </section>
+
+
+  <!-- APPLICATION FORM -->
+
+  <section
+    id="applicationFormSection"
+    class="panel form-panel"
+  >
+
+    <div class="panel-heading">
+
+      <div class="panel-icon">＋</div>
+
+      <div>
+        <h3 id="formHeading">Application Details</h3>
+
+        <p>
+          Review the extracted information before saving.
+        </p>
+      </div>
+
+    </div>
+
+
+    <form id="applicationForm">
+
+      <div class="form-grid">
 
         <label>
-
-          Search
+          Job Title
 
           <input
-            id="searchInput"
-            placeholder="Search title, company, skills..."
+            id="jobTitle"
+            name="jobTitle"
+            maxlength="80"
+            placeholder="Software Engineer"
+            required
           />
 
         </label>
 
 
         <label>
+          Company
 
+          <input
+            id="company"
+            name="company"
+            maxlength="100"
+            placeholder="Company name"
+            required
+          />
+
+        </label>
+
+
+        <label>
+          Location
+
+          <input
+            id="location"
+            name="location"
+            maxlength="100"
+            placeholder="Bangalore / Remote"
+          />
+
+        </label>
+
+
+        <label>
+          Salary
+
+          <input
+            id="salary"
+            name="salary"
+            maxlength="80"
+            placeholder="₹10–15 LPA"
+          />
+
+        </label>
+
+
+        <label>
+          Application URL
+
+          <input
+            id="applyUrl"
+            name="applyUrl"
+            type="url"
+            placeholder="https://..."
+          />
+
+        </label>
+
+
+        <label>
+          Deadline
+
+          <input
+            id="deadline"
+            name="deadline"
+            type="date"
+          />
+
+        </label>
+
+
+        <label>
           Status
 
-          <select id="statusFilter">
+          <select id="status" name="status">
 
-            <option value="all">All applications</option>
             <option value="Saved">Saved</option>
             <option value="Applied">Applied</option>
             <option value="Interview">Interview</option>
@@ -469,125 +326,311 @@ Salary: ₹12–18 LPA"
 
 
         <label>
+          Date Applied
 
-          Sort
-
-          <select id="sortSelect">
-
-            <option value="dateDesc">
-              Date Applied — Newest
-            </option>
-
-            <option value="dateAsc">
-              Date Applied — Oldest
-            </option>
-
-            <option value="title">
-              Job Title
-            </option>
-
-            <option value="company">
-              Company
-            </option>
-
-          </select>
+          <input
+            id="dateApplied"
+            name="dateApplied"
+            type="date"
+          />
 
         </label>
 
       </div>
 
 
-      <!-- APPLICATION LIST -->
+      <label class="full-width">
 
-      <ul
-        id="applicationsList"
-        class="applications"
-      ></ul>
+        Skills / Keywords
 
-    </section>
+        <input
+          id="skills"
+          name="skills"
+          maxlength="300"
+          placeholder="Java, SQL, React, AWS..."
+        />
 
-  </main>
-
-
-  <!-- ================= APPLICATION CARD TEMPLATE ================= -->
-
-  <template id="applicationCardTemplate">
-
-    <li class="application-card">
-
-      <div class="application-main">
-
-        <div class="application-title-row">
-
-          <div>
-
-            <h3 data-role="title"></h3>
-
-            <p
-              data-role="meta"
-              class="application-meta"
-            ></p>
-
-          </div>
-
-        </div>
+      </label>
 
 
-        <p
-          data-role="summary"
-          class="application-summary"
-        ></p>
+      <label class="full-width">
+
+        Notes
+
+        <textarea
+          id="notes"
+          name="notes"
+          maxlength="400"
+          rows="4"
+          placeholder="Add interview notes, recruiter details or follow-up reminders..."
+        ></textarea>
+
+        <small class="field-counter">
+          <span id="notesCounter">0</span>/400
+        </small>
+
+      </label>
 
 
-        <p
-          data-role="skills"
-          class="chips"
-        ></p>
-
-      </div>
-
-
-      <div class="card-actions">
-
-        <select data-role="statusSelect">
-
-          <option>Saved</option>
-          <option>Applied</option>
-          <option>Interview</option>
-          <option>Offer</option>
-          <option>Rejected</option>
-
-        </select>
-
+      <div class="form-actions">
 
         <button
-          data-role="edit"
+          id="saveApplicationBtn"
+          type="submit"
+          class="primary-button"
+        >
+          Save Application
+        </button>
+
+        <button
+          id="resetFormBtn"
           class="secondary-button"
           type="button"
         >
-          Edit
-        </button>
-
-
-        <button
-          data-role="delete"
-          class="danger-button"
-          type="button"
-        >
-          Delete
+          Reset
         </button>
 
       </div>
 
-    </li>
+    </form>
 
-  </template>
+  </section>
 
 
-  <!-- ================= SCRIPT ================= -->
+  <!-- APPLICATIONS -->
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="./app.js"></script>
+  <section class="panel applications-panel">
+
+    <div class="applications-header">
+
+      <div class="panel-heading">
+
+        <div class="panel-icon">▤</div>
+
+        <div>
+          <h3>Your Applications</h3>
+
+          <p>
+            Search and manage your opportunities.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="data-actions">
+
+        <button
+          id="loadSampleBtn"
+          class="secondary-button"
+          type="button"
+        >
+          Load Demo
+        </button>
+
+        <button
+          id="exportBtn"
+          class="secondary-button"
+          type="button"
+        >
+          Export JSON
+        </button>
+
+        <button
+          id="exportCsvBtn"
+          class="secondary-button"
+          type="button"
+        >
+          Export CSV
+        </button>
+
+        <button
+          id="importBtn"
+          class="secondary-button"
+          type="button"
+        >
+          Import
+        </button>
+
+        <input
+          id="importFile"
+          type="file"
+          accept=".json,application/json"
+          hidden
+        />
+
+      </div>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <div class="filters">
+
+      <label>
+
+        Search
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search title, company, skills..."
+        />
+
+      </label>
+
+
+      <label>
+
+        Status
+
+        <select id="statusFilter">
+
+          <option value="all">All applications</option>
+          <option value="Saved">Saved</option>
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Offer">Offer</option>
+          <option value="Rejected">Rejected</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Sort
+
+        <select id="sortSelect">
+
+          <option value="dateDesc">
+            Date Applied — Newest
+          </option>
+
+          <option value="dateAsc">
+            Date Applied — Oldest
+          </option>
+
+          <option value="title">
+            Job Title
+          </option>
+
+          <option value="company">
+            Company
+          </option>
+
+        </select>
+
+      </label>
+
+    </div>
+
+
+    <ul
+      id="applicationsList"
+      class="applications"
+    ></ul>
+
+  </section>
+
+</main>
+
+
+<!-- APPLICATION CARD -->
+
+<template id="applicationCardTemplate">
+
+  <li class="application-card">
+
+    <div class="application-main">
+
+      <div class="application-title-row">
+
+        <div class="application-company-icon">
+          H
+        </div>
+
+        <div>
+
+          <h3 data-role="title"></h3>
+
+          <p
+            data-role="meta"
+            class="application-meta"
+          ></p>
+
+        </div>
+
+      </div>
+
+
+      <p
+        data-role="summary"
+        class="application-summary"
+      ></p>
+
+
+      <p
+        data-role="skills"
+        class="chips"
+      ></p>
+
+    </div>
+
+
+    <div class="card-actions">
+
+      <select
+        data-role="statusSelect"
+        aria-label="Application status"
+      >
+
+        <option value="Saved">Saved</option>
+        <option value="Applied">Applied</option>
+        <option value="Interview">Interview</option>
+        <option value="Offer">Offer</option>
+        <option value="Rejected">Rejected</option>
+
+      </select>
+
+
+      <button
+        data-role="edit"
+        class="secondary-button"
+        type="button"
+      >
+        Edit
+      </button>
+
+
+      <button
+        data-role="open"
+        class="secondary-button"
+        type="button"
+      >
+        Open
+      </button>
+
+
+      <button
+        data-role="delete"
+        class="danger-button"
+        type="button"
+      >
+        Delete
+      </button>
+
+    </div>
+
+  </li>
+
+</template>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="./app.js"></script>
 
 </body>
 </html>
