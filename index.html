@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>HireFlow — Job Application Tracker</title>
 
   <meta
     name="description"
-    content="HireFlow is a smart job application tracker with job description analysis, analytics and application management."
-  />
+    content="HireFlow — smart job application tracking, analytics and job description analysis."
+  >
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
@@ -112,7 +112,92 @@
   </section>
 
 
-  <!-- ANALYZER + ANALYTICS -->
+  <!-- DASHBOARD INSIGHTS -->
+
+  <section class="insights-grid">
+
+    <div class="panel insight-card">
+
+      <div class="insight-top">
+        <span class="insight-icon">▣</span>
+
+        <div>
+          <span class="eyebrow">ACTIVITY</span>
+          <h3>Applications</h3>
+        </div>
+      </div>
+
+      <div class="insight-values">
+
+        <div>
+          <strong id="weekApplications">0</strong>
+          <span>This week</span>
+        </div>
+
+        <div>
+          <strong id="monthApplications">0</strong>
+          <span>This month</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="panel insight-card">
+
+      <div class="insight-top">
+        <span class="insight-icon">↗</span>
+
+        <div>
+          <span class="eyebrow">SUCCESS</span>
+          <h3>Conversion rates</h3>
+        </div>
+      </div>
+
+      <div class="rate-grid">
+
+        <div>
+          <strong id="interviewRate">0%</strong>
+          <span>Interview</span>
+        </div>
+
+        <div>
+          <strong id="offerRate">0%</strong>
+          <span>Offer</span>
+        </div>
+
+        <div>
+          <strong id="rejectionRate">0%</strong>
+          <span>Rejected</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="panel deadlines-card">
+
+      <div class="insight-top">
+
+        <span class="insight-icon">◷</span>
+
+        <div>
+          <span class="eyebrow">DEADLINES</span>
+          <h3>Upcoming deadlines</h3>
+        </div>
+
+      </div>
+
+      <div id="upcomingDeadlines" class="deadline-list"></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ANALYZER + CHART -->
 
   <section class="workspace">
 
@@ -190,7 +275,7 @@ Apply by: December 31, 2026"
 
         <div>
           <h3>Application Analytics</h3>
-          <p>Track your application pipeline.</p>
+          <p>Visualize your application pipeline.</p>
         </div>
 
       </div>
@@ -206,17 +291,14 @@ Apply by: December 31, 2026"
 
   <!-- APPLICATION FORM -->
 
-  <section
-    id="applicationFormSection"
-    class="panel form-panel"
-  >
+  <section class="panel form-panel">
 
     <div class="panel-heading">
 
       <div class="panel-icon">＋</div>
 
       <div>
-        <h3 id="formHeading">Application Details</h3>
+        <h3>Application Details</h3>
 
         <p>
           Review the extracted information before saving.
@@ -239,8 +321,7 @@ Apply by: December 31, 2026"
             maxlength="80"
             placeholder="Software Engineer"
             required
-          />
-
+          >
         </label>
 
 
@@ -253,8 +334,7 @@ Apply by: December 31, 2026"
             maxlength="100"
             placeholder="Company name"
             required
-          />
-
+          >
         </label>
 
 
@@ -266,8 +346,7 @@ Apply by: December 31, 2026"
             name="location"
             maxlength="100"
             placeholder="Bangalore / Remote"
-          />
-
+          >
         </label>
 
 
@@ -279,8 +358,7 @@ Apply by: December 31, 2026"
             name="salary"
             maxlength="80"
             placeholder="₹10–15 LPA"
-          />
-
+          >
         </label>
 
 
@@ -292,7 +370,7 @@ Apply by: December 31, 2026"
             name="applyUrl"
             type="url"
             placeholder="https://..."
-          />
+          >
 
         </label>
 
@@ -304,8 +382,7 @@ Apply by: December 31, 2026"
             id="deadline"
             name="deadline"
             type="date"
-          />
-
+          >
         </label>
 
 
@@ -332,7 +409,7 @@ Apply by: December 31, 2026"
             id="dateApplied"
             name="dateApplied"
             type="date"
-          />
+          >
 
         </label>
 
@@ -348,7 +425,7 @@ Apply by: December 31, 2026"
           name="skills"
           maxlength="300"
           placeholder="Java, SQL, React, AWS..."
-        />
+        >
 
       </label>
 
@@ -375,7 +452,6 @@ Apply by: December 31, 2026"
       <div class="form-actions">
 
         <button
-          id="saveApplicationBtn"
           type="submit"
           class="primary-button"
         >
@@ -457,32 +533,27 @@ Apply by: December 31, 2026"
           type="file"
           accept=".json,application/json"
           hidden
-        />
+        >
 
       </div>
 
     </div>
 
 
-    <!-- FILTERS -->
-
     <div class="filters">
 
       <label>
-
         Search
 
         <input
           id="searchInput"
           type="search"
           placeholder="Search title, company, skills..."
-        />
-
+        >
       </label>
 
 
       <label>
-
         Status
 
         <select id="statusFilter">
@@ -500,7 +571,6 @@ Apply by: December 31, 2026"
 
 
       <label>
-
         Sort
 
         <select id="sortSelect">
@@ -548,11 +618,14 @@ Apply by: December 31, 2026"
 
       <div class="application-title-row">
 
-        <div class="application-company-icon">
+        <div
+          class="application-company-icon"
+          data-role="companyIcon"
+        >
           H
         </div>
 
-        <div>
+        <div class="application-heading-content">
 
           <h3 data-role="title"></h3>
 
@@ -562,6 +635,21 @@ Apply by: December 31, 2026"
           ></p>
 
         </div>
+
+      </div>
+
+
+      <div class="card-badges">
+
+        <span
+          data-role="statusBadge"
+          class="status-badge"
+        ></span>
+
+        <span
+          data-role="deadlineBadge"
+          class="deadline-badge"
+        ></span>
 
       </div>
 
@@ -597,20 +685,20 @@ Apply by: December 31, 2026"
 
 
       <button
+        data-role="open"
+        class="secondary-button"
+        type="button"
+      >
+        Open Job
+      </button>
+
+
+      <button
         data-role="edit"
         class="secondary-button"
         type="button"
       >
         Edit
-      </button>
-
-
-      <button
-        data-role="open"
-        class="secondary-button"
-        type="button"
-      >
-        Open
       </button>
 
 
