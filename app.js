@@ -1,6 +1,6 @@
-const STORAGE_KEY = 'jat.applications.v1';
-const DRAFT_KEY = 'jat.draft.v1';
-const THEME_KEY = 'jat.theme.v1';
+const STORAGE_KEY = 'hireflow.applications.v1';
+const DRAFT_KEY = 'hireflow.draft.v1';
+const THEME_KEY = 'hireflow.theme.v1';
 const MAX_NOTES_LENGTH = 400;
 const MAX_SUMMARY_LENGTH = 120;
 const MIN_TITLE_LENGTH = 3;
@@ -313,7 +313,7 @@ document.getElementById('exportBtn').addEventListener('click', () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'job-applications.json';
+  a.download = 'hireflow-applications.json';
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -333,7 +333,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'job-applications.csv';
+  a.download = 'hireflow-applications.csv';
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -368,9 +368,9 @@ document.getElementById('loadSampleBtn').addEventListener('click', () => {
       location: 'Remote (US)',
       salary: '$140,000 - $160,000',
       applyUrl: 'https://techcorp.com/careers/frontend',
-      deadline: '2023-12-31',
+      deadline: '2026-12-31',
       status: 'Interview',
-      dateApplied: '2023-10-15',
+      dateApplied: '2026-10-15',
       skills: 'React, TypeScript, CSS, Testing',
       notes: 'Had a great first round with the hiring manager. Next step is a technical pair programming session.',
       updatedAt: new Date().toISOString()
@@ -382,9 +382,9 @@ document.getElementById('loadSampleBtn').addEventListener('click', () => {
       location: 'New York, NY',
       salary: '$120,000',
       applyUrl: 'https://startupx.io/jobs/123',
-      deadline: '2023-11-15',
+      deadline: '2026-11-15',
       status: 'Applied',
-      dateApplied: '2023-10-20',
+      dateApplied: '2026-10-20',
       skills: 'Node.js, React, PostgreSQL',
       notes: 'Applied through their custom portal. Need to follow up in a week if I do not hear back.',
       updatedAt: new Date().toISOString()
@@ -398,7 +398,7 @@ document.getElementById('loadSampleBtn').addEventListener('click', () => {
       applyUrl: '',
       deadline: '',
       status: 'Rejected',
-      dateApplied: '2023-09-01',
+      dateApplied: '2026-09-01',
       skills: 'Java, Spring Boot, AWS',
       notes: 'Received a standard rejection email. Role might have been filled internally.',
       updatedAt: new Date().toISOString()
@@ -410,9 +410,9 @@ document.getElementById('loadSampleBtn').addEventListener('click', () => {
       location: 'London, UK (Hybrid)',
       salary: '£80,000',
       applyUrl: 'https://creative.agency/careers',
-      deadline: '2023-11-30',
+      deadline: '2026-11-30',
       status: 'Offer',
-      dateApplied: '2023-09-15',
+      dateApplied: '2026-09-15',
       skills: 'JavaScript, Vue.js, Tailwind',
       notes: 'They offered! Need to review the benefits package before accepting.',
       updatedAt: new Date().toISOString()
@@ -424,7 +424,7 @@ document.getElementById('loadSampleBtn').addEventListener('click', () => {
       location: 'San Francisco, CA',
       salary: '$150,000+',
       applyUrl: 'https://datastream.io/apply',
-      deadline: '2023-12-01',
+      deadline: '2026-12-01',
       status: 'Saved',
       dateApplied: '',
       skills: 'Python, Django, Redis, Docker',
